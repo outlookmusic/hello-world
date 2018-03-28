@@ -1,0 +1,55 @@
+import pygame
+from pygame.locals import *
+from sys import exit
+
+def recover():
+    screen.fill((255,255,255))
+    screen.blit(bold,(0,50))
+    screen.blit(thin,(25,50))
+    pygame.draw.rect(screen,(255,255,255),(0,100,50,50))
+    pygame.draw.circle(screen,color,(25,125),radius)
+    screen.blit(board,(0,200))
+    screen.blit(eraser,(0,500))
+pygame.init()
+screen=pygame.display.set_mode((800,600),0,32)
+color=(0,0,0)
+radius=5
+flag=False
+#资源加载
+path='resources/images/'
+bold=pygame.image.load(path+'+.png')
+thin=pygame.image.load(path+'-.png')
+board=pygame.image.load(path+'color_board.png')
+eraser=pygame.image.load(path+'eraser.png')
+#绘制
+recover()
+
+while True:
+    for e in pygame.event.get():
+        
+        if e.type==QUIT:
+            exit()
+        elif e.type==MOUSEBUTTONDOWN:
+            flag=True
+            x,y=e.pos
+            if x>=0 and x<=25 and y>=50 and y<=75:
+                radius=radius+1
+                if radius>20:
+                    radius=20
+            elif x>=25 and x<=50 and y>=50 and y<=75:
+                radius=radius-1
+                if radius<1:
+                    radius=1
+            elif x>=0 and x<=50 and y>=200 and y<=400:
+                color=screen.get_at((x,y))
+            elif x>=0 and x<=50 and y>=500 and y<=550:
+                recover()
+            pygame.draw.rect(screen,(255,255,255),(0,100,50,50))
+            pygame.draw.circle(screen,color,(25,125),radius)
+        elif e.type==MOUSEBUTTONUP:
+            flag=False
+        elif e.type==MOUSEMOTION:
+            x,y=e.pos
+            if flag and x>100:
+                pygame.draw.circle(screen,color,(x,y),radius)
+    pygame.display.update()
